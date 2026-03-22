@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Bazar Top ULTRA - Маркетплейс</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6d28d9;
+      --secondary: #8b5cf6;
+    }
+    
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #f8fafc;
+      background-image: radial-gradient(at 10% 20%, rgba(109, 40, 217, 0.1) 0px, transparent 50%),
+                        radial-gradient(at 90% 80%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+      min-height: 100vh;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-slide-up { animation: slideUp 0.3s ease-out; }
+    
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+    
+    .bg-dots {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.3;
+    }
+    
+    .bg-dots::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background-image: radial-gradient(var(--primary) 1px, transparent 1px);
+      background-size: 30px 30px;
+      animation: moveDots 120s linear infinite;
+    }
+    
+    @keyframes moveDots {
+      0% { transform: translateY(0) translateX(0); }
+      100% { transform: translateY(-1000px) translateX(-500px); }
+    }
+    
+    .vip-card { border: 2px solid gold; box-shadow: 0 0 20px rgba(255,215,0,0.3); position: relative; overflow: hidden; }
+    .vip-card::before { content: "⭐ VIP"; position: absolute; top: 10px; right: -30px; background: gold; color: #000; padding: 4px 40px; transform: rotate(45deg); font-size: 12px; font-weight: bold; z-index: 10; }
+    .urgent-card { border-left: 4px solid #ef4444; }
+    
+    .ad-banner {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border: 2px dashed #f59e0b;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ad-banner:hover { transform: scale(1.02); background: linear-gradient(135deg, #fde68a, #fcd34d); }
+    
+    .toast-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .catBtn {
+      padding: 8px 16px;
+      border-radius: 9999px;
+      background-color: #f3f4f6;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      color: #4b5563;
+    }
+    
+    .catBtn-active {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
+    }
+    
+    .filter-btn.active {
+      background-color: #f3e8ff !important;
+      color: #6d28d9 !important;
+    }
+    
+    .price-big {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .photo-upload-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #f9fafb;
+      border: 2px dashed #c4b5fd;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+    
+    .photo-preview {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    
+    .preview-item {
+      position: relative;
+      width: 80px;
+      height: 80px;
+    }
+    
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    
+    .remove-photo {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .chat-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(109, 40, 217, 0.4);
+      z-index: 1000;
+    }
+    
+    .chat-window {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: 380px;
+      height: 550px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1001;
+    }
+    
+    .chat-header {
+      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      background: #f9fafb;
+    }
+    
+    .message {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .message.support { align-items: flex-start; }
+    .message.user { align-items: flex-end; }
+    
+    .message-bubble {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+    }
+    
+    .message.support .message-bubble {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-bottom-left-radius: 4px;
+    }
+    
+    .message.user .message-bubble {
+      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .chat-input-area {
+      padding: 12px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      gap: 8px;
+      background: white;
+    }
+    
+    .chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 24px;
+      outline: none;
+    }
+    
+    .chat-send {
+      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      padding: 8px 20px;
+      cursor: pointer;
+    }
+    
+    .category-scroll {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .rating-stars { display: inline-flex; gap: 2px; }
+    .badge-pro { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2px 8px; border-radius: 12px; font-size: 10px; color: white; }
+    .profile-tab { cursor: pointer; transition: all 0.2s; }
+    .profile-tab.active { border-bottom: 2px solid var(--primary); color: var(--primary); }
+    
+    @media (max-width: 640px) {
+      .chat-window { width: calc(100% - 32px); right: 16px; left: 16px; bottom: 80px; height: 500px; }
+      .price-big { font-size: 1.2rem; }
+      .preview-item { width: 70px; height: 70px; }
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .google-btn {
+      background: white;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+    .google-btn:hover { background: #f8fafc; }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-dots"></div>
+  
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="gradient-bg text-white p-2 rounded-lg animate-float">
+            <i class="fas fa-store text-xl"></i>
+          </div>
+          <h1 class="text-xl font-bold gradient-text">Bazar Top ULTRA</h1>
+          <span class="badge-pro">⭐ ULTRA</span>
+        </div>
+        <div id="authBar"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-6">
+    <!-- Реклама -->
+    <div class="ad-banner rounded-2xl p-6 mb-6 text-center cursor-pointer" onclick="showToast('🚀 Разместите рекламу! Всего 500₽/день', 'info')">
+      <i class="fas fa-ad text-3xl text-orange-500 mb-2 animate-float"></i>
+      <h3 class="font-bold text-lg text-orange-700">ТУТ МОГЛА БЫТЬ ВАША РЕКЛАМА</h3>
+    </div>
+
+    <!-- Поиск -->
+    <div class="mb-6">
+      <div class="flex flex-col space-y-3 md:flex-row md:space-y-0 md:space-x-3">
+        <div class="relative flex-1">
+          <input id="searchInput" type="text" placeholder="🔍 Найти товары..." 
+                 class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 outline-none">
+          <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+        </div>
+        <select id="sortSelect" class="px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 outline-none">
+          <option value="new">Сначала новые</option>
+          <option value="cheap">Сначала дешевые</option>
+          <option value="expensive">Сначала дорогие</option>
+          <option value="popular">По популярности</option>
+        </select>
+        <button id="addBtn" class="gradient-bg text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition flex items-center justify-center gap-2">
+          <i class="fas fa-plus"></i> Добавить
+        </button>
+      </div>
+    </div>
+
+    <!-- Категории -->
+    <div class="mb-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-3">📂 Каталог</h2>
+      <div class="category-scroll flex flex-nowrap gap-2 pb-2">
+        <button class="catBtn category-filter active" data-cat="all">Все</button>
+        <button class="catBtn category-filter" data-cat="Электроника">📱 Электроника</button>
+        <button class="catBtn category-filter" data-cat="Одежда">👕 Одежда</button>
+        <button class="catBtn category-filter" data-cat="Игрушки">🧸 Игрушки</button>
+        <button class="catBtn category-filter" data-cat="Для дома">🏠 Для дома</button>
+        <button class="catBtn category-filter" data-cat="Мебель">🛋️ Мебель</button>
+        <button class="catBtn category-filter" data-cat="Авто">🚗 Авто</button>
+      </div>
+    </div>
+    
+    <!-- Фильтры состояния -->
+    <div class="flex flex-wrap gap-2 mb-4">
+      <button class="filter-btn active px-4 py-2 rounded-full bg-purple-100 text-purple-800 text-sm" data-filter="all">Все</button>
+      <button class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 text-sm" data-filter="new">🆕 Новые</button>
+      <button class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 text-sm" data-filter="used">🔄 Б/У</button>
+      <button class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 text-sm" data-filter="urgent">⚡ Срочно</button>
+      <button class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 text-sm" data-filter="exchange">🔄 Обмен</button>
+    </div>
+
+    <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <div id="emptyState" class="hidden text-center py-16">
+      <i class="fas fa-frown text-4xl text-purple-400 mb-3"></i>
+      <p class="text-gray-500">Объявлений пока нет</p>
+    </div>
+  </main>
+
+  <!-- Чат -->
+  <div class="chat-btn" id="chatBtn"><i class="fas fa-comment-dots text-2xl"></i></div>
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <span><i class="fas fa-headset mr-2"></i>Чат с поддержкой</span>
+      <button id="closeChatBtn" class="text-white text-xl">✕</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message support">
+        <div class="message-bubble">👋 Здравствуйте! Чем могу помочь?</div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" class="chat-input" placeholder="Напишите сообщение...">
+      <button id="chatSendBtn" class="chat-send"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <!-- Модалки -->
+  <dialog id="authModal" class="w-full max-w-md p-0 rounded-2xl backdrop:bg-black/30">
+    <div class="bg-white rounded-2xl overflow-hidden">
+      <div class="gradient-bg px-6 py-4 flex justify-between">
+        <h3 class="text-white"><i class="fas fa-user mr-2"></i>Вход / Регистрация</h3>
+        <button id="closeAuthModal" class="text-white">✕</button>
+      </div>
+      <div class="p-6 space-y-4">
+        <input id="authEmail" type="email" placeholder="Email" class="w-full px-4 py-3 rounded-xl border">
+        <input id="authPassword" type="password" placeholder="Пароль (мин. 6 символов)" class="w-full px-4 py-3 rounded-xl border">
+        <input id="authName" type="text" placeholder="Ваше имя" class="w-full px-4 py-3 rounded-xl border hidden">
+        <button id="toggleAuthMode" class="text-sm text-purple-600">Нет аккаунта? Зарегистрируйтесь</button>
+        <button id="authSubmit" class="w-full gradient-bg text-white py-3 rounded-xl font-medium">Войти</button>
+        <button id="googleSignInBtn" class="google-btn w-full flex items-center justify-center gap-3 border rounded-xl py-3">
+          <i class="fab fa-google text-red-500 text-xl"></i> Google
+        </button>
+        <div id="authError" class="text-red-600 text-sm hidden"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="adModal" class="w-full max-w-md p-0 rounded-2xl backdrop:bg-black/30">
+    <div class="bg-white rounded-2xl overflow-hidden">
+      <div class="gradient-bg px-6 py-4 flex justify-between">
+        <h3 id="modalTitle" class="text-white">Новое объявление</h3>
+        <button id="closeModal" class="text-white">✕</button>
+      </div>
+      <div class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+        <input id="adTitle" placeholder="Название*" class="w-full px-4 py-3 rounded-xl border">
+        <textarea id="adDesc" placeholder="Описание*" rows="3" class="w-full px-4 py-3 rounded-xl border"></textarea>
+        <div class="grid grid-cols-2 gap-3">
+          <input id="adPrice" type="number" placeholder="Цена*" class="w-full px-4 py-3 rounded-xl border">
+          <select id="adCurrency" class="px-4 py-3 rounded-xl border">
+            <option value="RUB">₽ Рубли</option>
+            <option value="USD">$ Доллары</option>
+            <option value="UZS">сум Узб.сум</option>
+          </select>
+        </div>
+        <select id="adCategory" class="w-full px-4 py-3 rounded-xl border">
+          <option>Электроника</option><option>Одежда</option><option>Игрушки</option>
+          <option>Для дома</option><option>Мебель</option><option>Авто</option>
+        </select>
+        <div class="flex flex-wrap gap-3">
+          <label><input type="radio" name="condition" value="new" checked> Новый</label>
+          <label><input type="radio" name="condition" value="used"> Б/У</label>
+          <label><input type="checkbox" id="isUrgent"> ⚡ Срочно</label>
+          <label><input type="checkbox" id="isVip"> 👑 VIP</label>
+          <label><input type="checkbox" id="isExchange"> 🔄 Обмен</label>
+        </div>
+        <input id="adLocation" placeholder="Город*" class="w-full px-4 py-3 rounded-xl border">
+        <input id="adPhone" placeholder="Телефон*" class="w-full px-4 py-3 rounded-xl border">
+        <div>
+          <div class="photo-upload-btn" onclick="document.getElementById('adImages').click()">
+            <i class="fas fa-cloud-upload-alt text-3xl text-purple-500 mb-2"></i>
+            <span>Выбрать фото (до 5 шт.)</span>
+            <input id="adImages" type="file" accept="image/*" multiple style="display:none">
+          </div>
+          <div id="photoPreview" class="photo-preview"></div>
+        </div>
+        <button id="saveAd" class="w-full gradient-bg text-white py-3 rounded-xl font-medium">Сохранить</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="viewDialog" class="w-full max-w-md p-0 rounded-2xl backdrop:bg-black/30">
+    <div class="bg-white rounded-2xl overflow-hidden">
+      <div class="relative h-48 bg-gray-100">
+        <img id="viewImg" class="w-full h-full object-cover">
+        <div id="conditionBadge" class="absolute top-2 left-2 px-2 py-1 rounded-full text-xs bg-white"></div>
+        <button id="favoriteBtn" class="absolute top-2 right-2 bg-white rounded-full p-2 shadow-lg"><i class="far fa-heart text-red-500"></i></button>
+      </div>
+      <div class="p-5 space-y-3">
+        <h3 id="viewTitle" class="text-xl font-bold"></h3>
+        <div><span id="viewPrice" class="price-big"></span></div>
+        <p id="viewDesc" class="text-gray-600 text-sm"></p>
+        <div id="viewThumbs" class="flex gap-2 flex-wrap"></div>
+        <a id="viewPhone" class="block text-center gradient-bg text-white py-2 rounded-lg"><i class="fas fa-phone mr-2"></i>Позвонить</a>
+        <button id="viewSellerProfileBtn" class="w-full border py-2 rounded-lg"><i class="fas fa-user mr-2"></i>Профиль продавца</button>
+        <div id="ownerActions" class="hidden grid grid-cols-2 gap-2">
+          <button id="editAdBtn" class="bg-gray-800 text-white py-2 rounded-lg">Ред.</button>
+          <button id="deleteAdBtn" class="bg-red-600 text-white py-2 rounded-lg">Удал.</button>
+        </div>
+        <div class="flex items-center gap-2 pt-2 border-t">
+          <div id="viewUserAvatar" class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600"></div>
+          <div><p id="viewUser" class="text-sm font-medium"></p><p id="viewWhen" class="text-xs text-gray-400"></p></div>
+        </div>
+        <button id="closeView" class="w-full border py-2 rounded-lg">Закрыть</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="sellerProfileModal" class="w-full max-w-2xl p-0 rounded-2xl backdrop:bg-black/30">
+    <div class="bg-white rounded-2xl overflow-hidden max-h-[80vh] flex flex-col">
+      <div class="gradient-bg px-6 py-4 flex justify-between">
+        <h3 class="text-white"><i class="fas fa-store mr-2"></i>Профиль продавца</h3>
+        <button id="closeSellerProfileModal" class="text-white text-2xl">✕</button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-6">
+        <div class="text-center mb-6">
+          <div id="sellerAvatar" class="w-24 h-24 rounded-full bg-purple-100 mx-auto flex items-center justify-center text-3xl font-bold text-purple-600"></div>
+          <h2 id="sellerName" class="text-xl font-bold mt-3"></h2>
+          <div id="sellerRating" class="rating-stars mt-1"></div>
+          <div id="sellerAdsCount" class="mt-2 text-sm text-gray-500"></div>
+        </div>
+        <h3 class="font-bold text-lg mb-4">Все объявления продавца</h3>
+        <div id="sellerAdsList" class="space-y-3"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="profileModal" class="w-full max-w-3xl p-0 rounded-2xl backdrop:bg-black/30">
+    <div class="bg-white rounded-2xl overflow-hidden max-h-[90vh] flex flex-col">
+      <div class="gradient-bg px-6 py-4 flex justify-between">
+        <h3 class="text-white text-xl"><i class="fas fa-user-circle mr-2"></i>Личный кабинет</h3>
+        <button id="closeProfileModal" class="text-white text-2xl">✕</button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-6">
+        <div class="flex items-center gap-6 mb-8 pb-6 border-b flex-wrap">
+          <div id="profileAvatarBig" class="w-24 h-24 rounded-full bg-purple-100 flex items-center justify-center text-4xl font-bold text-purple-600"></div>
+          <div>
+            <h2 id="profileNameBig" class="text-2xl font-bold"></h2>
+            <p id="profileEmailBig" class="text-gray-500"></p>
+          </div>
+          <button id="logoutBtn" class="ml-auto bg-red-500 text-white px-6 py-2 rounded-lg">Выйти</button>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="bg-purple-50 rounded-xl p-4 text-center"><div id="profileAdsCountBig" class="text-2xl font-bold text-purple-600">0</div><div class="text-sm">Объявлений</div></div>
+          <div class="bg-green-50 rounded-xl p-4 text-center"><div id="profileViewsBig" class="text-2xl font-bold text-green-600">0</div><div class="text-sm">Просмотров</div></div>
+          <div class="bg-blue-50 rounded-xl p-4 text-center"><div id="profileRatingBig" class="text-2xl font-bold text-blue-600">0</div><div class="text-sm">Рейтинг</div></div>
+          <div class="bg-orange-50 rounded-xl p-4 text-center"><div id="profileSalesBig" class="text-2xl font-bold text-orange-600">0</div><div class="text-sm">Продаж</div></div>
+        </div>
+
+        <div class="flex gap-6 border-b mb-6 overflow-x-auto">
+          <button class="profile-tab active pb-2 px-1 font-medium" data-tab="myads"><i class="fas fa-list mr-2"></i>Мои объявления</button>
+          <button class="profile-tab pb-2 px-1 font-medium" data-tab="favorites"><i class="fas fa-heart mr-2"></i>Избранное</button>
+          <button class="profile-tab pb-2 px-1 font-medium" data-tab="history"><i class="fas fa-history mr-2"></i>История</button>
+          <button class="profile-tab pb-2 px-1 font-medium" data-tab="stats"><i class="fas fa-chart-line mr-2"></i>Статистика</button>
+        </div>
+
+        <div id="tab-myads" class="tab-content"><div id="myAdsList" class="space-y-3"></div></div>
+        <div id="tab-favorites" class="tab-content hidden"><div id="favoritesList" class="space-y-3"></div></div>
+        <div id="tab-history" class="tab-content hidden"><div id="historyList" class="space-y-3"></div></div>
+        <div id="tab-stats" class="tab-content hidden"><div id="statsList" class="space-y-3"></div></div>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB7lkappg-4omdbOQ9xa-zgBH81Tq5mr4U",
+      authDomain: "bazarlive-732c1.firebaseapp.com",
+      projectId: "bazarlive-732c1",
+      storageBucket: "bazarlive-732c1.appspot.com",
+      messagingSenderId: "67666176855",
+      appId: "1:67666176855:web:d8fc58628deaca3652ec12"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    let currentUser = null;
+    let ads = [];
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    let viewHistory = JSON.parse(localStorage.getItem('viewHistory') || '[]');
+    let editingAdId = null;
+    let currentFilter = 'all';
+    let currentCategory = 'all';
+    let isLoginMode = true;
+    let selectedImages = [];
+
+    window.showToast = function(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = 'toast-notification';
+      toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} text-${type === 'success' ? 'green' : 'blue'}-500"></i><span>${message}</span>`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    };
+
+    const formatPrice = (price, currency) => {
+      if (currency === 'UZS') return new Intl.NumberFormat('ru-RU').format(price) + ' сум';
+      return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: currency === 'USD' ? 'USD' : 'RUB' }).format(price);
+    };
+
+    const compressImage = (file) => new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height;
+          const max = 800;
+          if (w > h && w > max) { h *= max / w; w = max; }
+          else if (h > max) { w *= max / h; h = max; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          canvas.toBlob((blob) => {
+            const fr = new FileReader();
+            fr.onload = () => resolve(fr.result);
+            fr.readAsDataURL(blob);
+          }, 'image/jpeg', 0.7);
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+
+    async function updatePhotoPreview() {
+      const previewDiv = document.getElementById('photoPreview');
+      if (!previewDiv) return;
+      previewDiv.innerHTML = '';
+      for (let i = 0; i < selectedImages.length; i++) {
+        const div = document.createElement('div');
+        div.className = 'preview-item';
+        div.innerHTML = `<img src="${selectedImages[i]}"><div class="remove-photo" data-index="${i}">✕</div>`;
+        previewDiv.appendChild(div);
+      }
+      document.querySelectorAll('.remove-photo').forEach(btn => {
+        btn.onclick = (e) => {
+          const idx = parseInt(btn.dataset.index);
+          selectedImages.splice(idx, 1);
+          updatePhotoPreview();
+        };
+      });
+    }
+
+    const renderStars = (rating) => {
+      let stars = '';
+      for(let i = 1; i <= 5; i++) stars += `<i class="fas fa-star${i <= Math.floor(rating) ? '' : '-o'} text-yellow-400 text-xs"></i>`;
+      return stars;
+    };
+
+    function renderAds() {
+      const grid = document.getElementById('adsGrid');
+      const empty = document.getElementById('emptyState');
+      if (!grid) return;
+      
+      let filtered = [...ads];
+      if (currentFilter === 'new') filtered = filtered.filter(ad => ad.condition === 'new');
+      else if (currentFilter === 'used') filtered = filtered.filter(ad => ad.condition === 'used');
+      else if (currentFilter === 'urgent') filtered = filtered.filter(ad => ad.urgent);
+      else if (currentFilter === 'exchange') filtered = filtered.filter(ad => ad.exchange);
+      if (currentCategory !== 'all') filtered = filtered.filter(ad => ad.category === currentCategory);
+      
+      const search = document.getElementById('searchInput')?.value.toLowerCase() || '';
+      if (search) filtered = filtered.filter(ad => ad.title.toLowerCase().includes(search) || ad.description.toLowerCase().includes(search));
+      
+      const sort = document.getElementById('sortSelect')?.value;
+      if (sort === 'cheap') filtered.sort((a,b) => a.price - b.price);
+      else if (sort === 'expensive') filtered.sort((a,b) => b.price - a.price);
+      else if (sort === 'popular') filtered.sort((a,b) => (b.views || 0) - (a.views || 0));
+      else filtered.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      
+      if (filtered.length === 0) { empty?.classList.remove('hidden'); grid.innerHTML = ''; return; }
+      empty?.classList.add('hidden');
+      
+      grid.innerHTML = filtered.map(ad => `
+        <div class="bg-white rounded-xl overflow-hidden shadow card-hover ${ad.vip ? 'vip-card' : ''} ${ad.urgent ? 'urgent-card' : ''}">
+          <div class="h-48 bg-gray-100 relative">
+            <img src="${ad.images?.[0] || 'https://via.placeholder.com/400x300'}" class="w-full h-full object-cover">
+            <div class="absolute bottom-2 left-2 bg-white/90 px-2 py-1 rounded text-sm font-bold">${formatPrice(ad.price, ad.currency)}</div>
+            <div class="absolute top-2 left-2 ${ad.condition === 'new' ? 'bg-green-100' : 'bg-blue-100'} px-2 py-0.5 rounded text-xs">${ad.condition === 'new' ? 'Новый' : 'Б/У'}</div>
+            ${ad.exchange ? '<div class="absolute top-2 right-2 bg-orange-100 px-2 py-0.5 rounded text-xs">🔄 Обмен</div>' : ''}
+            <div class="absolute bottom-2 right-2 bg-black/50 text-white px-2 py-0.5 rounded text-xs"><i class="far fa-eye"></i> ${ad.views || 0}</div>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold truncate">${ad.title}</h3>
+            <div class="text-gray-500 text-sm mt-1"><i class="fas fa-map-marker-alt"></i> ${ad.location}</div>
+            <button class="w-full mt-3 bg-purple-600 text-white py-2 rounded-lg view-details" data-id="${ad.id}">Подробнее</button>
+          </div>
+        </div>
+      `).join('');
+      
+      document.querySelectorAll('.view-details').forEach(btn => {
+        btn.onclick = () => showAdDetails(ads.find(a => a.id === btn.dataset.id));
+      });
+    }
+
+    async function showAdDetails(ad) {
+      const d = document.getElementById('viewDialog');
+      if (!d) return;
+      
+      if (ad.id) {
+        const adRef = doc(db, 'ads', ad.id);
+        await updateDoc(adRef, { views: (ad.views || 0) + 1 });
+        ad.views = (ad.views || 0) + 1;
+      }
+      
+      if (currentUser && !viewHistory.includes(ad.id)) {
+        viewHistory.unshift(ad.id);
+        if (viewHistory.length > 20) viewHistory.pop();
+        localStorage.setItem('viewHistory', JSON.stringify(viewHistory));
+      }
+      
+      document.getElementById('viewTitle').innerText = ad.title;
+      document.getElementById('viewPrice').innerHTML = formatPrice(ad.price, ad.currency);
+      document.getElementById('viewDesc').innerText = ad.description;
+      const phoneLink = document.getElementById('viewPhone');
+      phoneLink.href = `tel:${ad.phone.replace(/\D/g, '')}`;
+      phoneLink.innerHTML = `<i class="fas fa-phone mr-2"></i>${ad.phone}`;
+      
+      const isFav = favorites.includes(ad.id);
+      document.getElementById('favoriteBtn').innerHTML = `<i class="fas fa-heart${!isFav ? '-o' : ''} text-red-500"></i>`;
+      document.getElementById('favoriteBtn').onclick = () => toggleFavorite(ad.id);
+      
+      const userName = ad.userName || 'Аноним';
+      document.getElementById('viewUserAvatar').innerHTML = userName[0].toUpperCase();
+      document.getElementById('viewUser').innerHTML = userName;
+      if (ad.createdAt) {
+        const date = ad.createdAt.toDate();
+        document.getElementById('viewWhen').innerHTML = `<i class="far fa-calendar-alt"></i> ${date.toLocaleDateString()}`;
+      }
+      
+      document.getElementById('viewSellerProfileBtn').onclick = () => showSellerProfile(ad.userId, ad.userName);
+      
+      const thumbsDiv = document.getElementById('viewThumbs');
+      thumbsDiv.innerHTML = '';
+      if (ad.images?.length) {
+        document.getElementById('viewImg').src = ad.images[0];
+        ad.images.forEach((img, i) => {
+          const t = document.createElement('img');
+          t.src = img;
+          t.className = 'w-12 h-12 object-cover rounded cursor-pointer border-2 ' + (i === 0 ? 'border-purple-500' : 'border-transparent');
+          t.onclick = () => {
+            document.querySelectorAll('#viewThumbs img').forEach(img => img.classList.remove('border-purple-500'));
+            t.classList.add('border-purple-500');
+            document.getElementById('viewImg').src = img;
+          };
+          thumbsDiv.appendChild(t);
+        });
+      }
+      
+      const ownerDiv = document.getElementById('ownerActions');
+      if (currentUser && ad.userId === currentUser.uid) {
+        ownerDiv.classList.remove('hidden');
+        document.getElementById('editAdBtn').onclick = () => {
+          editingAdId = ad.id;
+          document.getElementById('modalTitle').innerText = 'Редактировать';
+          document.getElementById('adTitle').value = ad.title;
+          document.getElementById('adDesc').value = ad.description;
+          document.getElementById('adPrice').value = ad.price;
+          document.getElementById('adCurrency').value = ad.currency;
+          document.querySelector(`input[name="condition"][value="${ad.condition}"]`).checked = true;
+          document.getElementById('adLocation').value = ad.location;
+          document.getElementById('adPhone').value = ad.phone;
+          document.getElementById('adCategory').value = ad.category;
+          document.getElementById('isUrgent').checked = ad.urgent || false;
+          document.getElementById('isVip').checked = ad.vip || false;
+          document.getElementById('isExchange').checked = ad.exchange || false;
+          selectedImages = ad.images || [];
+          updatePhotoPreview();
+          d.close();
+          document.getElementById('adModal').showModal();
+        };
+        document.getElementById('deleteAdBtn').onclick = async () => {
+          if (confirm('Удалить?')) {
+            await deleteDoc(doc(db, 'ads', ad.id));
+            window.showToast('Объявление удалено');
+            d.close();
+          }
+        };
+      } else {
+        ownerDiv.classList.add('hidden');
+      }
+      d.showModal();
+    }
+
+    async function showSellerProfile(userId, userName) {
+      const sellerAds = ads.filter(ad => ad.userId === userId);
+      const modal = document.getElementById('sellerProfileModal');
+      document.getElementById('sellerAvatar').innerHTML = (userName?.[0] || 'А').toUpperCase();
+      document.getElementById('sellerName').innerHTML = userName || 'Продавец';
+      document.getElementById('sellerRating').innerHTML = renderStars(sellerAds.reduce((sum, ad) => sum + (ad.sellerRating || 0), 0) / (sellerAds.length || 1));
+      document.getElementById('sellerAdsCount').innerHTML = `${sellerAds.length} объявлений`;
+      document.getElementById('sellerAdsList').innerHTML = sellerAds.map(ad => `
+        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl cursor-pointer seller-ad-item" data-id="${ad.id}">
+          <img src="${ad.images?.[0] || 'https://via.placeholder.com/60'}" class="w-16 h-16 object-cover rounded-lg">
+          <div class="flex-1">
+            <h4 class="font-bold">${ad.title}</h4>
+            <div class="price-big text-sm">${formatPrice(ad.price, ad.currency)}</div>
+            <div class="text-xs text-gray-500">📍 ${ad.location}</div>
+          </div>
+        </div>
+      `).join('');
+      
+      document.querySelectorAll('.seller-ad-item').forEach(el => {
+        el.onclick = () => {
+          modal.close();
+          showAdDetails(sellerAds.find(a => a.id === el.dataset.id));
+        };
+      });
+      modal.showModal();
+    }
+
+    function toggleFavorite(adId) {
+      if (!currentUser) {
+        window.showToast('Войдите в аккаунт', 'error');
+        document.getElementById('authModal').showModal();
+        return;
+      }
+      const index = favorites.indexOf(adId);
+      if (index > -1) favorites.splice(index, 1);
+      else favorites.push(adId);
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      window.showToast(index > -1 ? 'Удалено из избранного' : 'Добавлено в избранное');
+      renderAds();
+    }
+
+    async function saveAdHandler() {
+      if (!currentUser) {
+        window.showToast('Сначала войдите в аккаунт', 'error');
+        document.getElementById('authModal').showModal();
+        return;
+      }
+      const title = document.getElementById('adTitle').value.trim();
+      const desc = document.getElementById('adDesc').value.trim();
+      const price = Number(document.getElementById('adPrice').value);
+      const currency = document.getElementById('adCurrency').value;
+      const condition = document.querySelector('input[name="condition"]:checked').value;
+      const location = document.getElementById('adLocation').value.trim();
+      const phone = document.getElementById('adPhone').value.trim();
+      const category = document.getElementById('adCategory').value;
+      const urgent = document.getElementById('isUrgent').checked;
+      const vip = document.getElementById('isVip').checked;
+      const exchange = document.getElementById('isExchange').checked;
+      
+      if (!title || !desc || !price || !location || !phone) {
+        window.showToast('Заполните все поля!', 'error');
+        return;
+      }
+      
+      try {
+        const btn = document.getElementById('saveAd');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading-spinner"></span>Сохранение...';
+        const data = {
+          title, description: desc, price, currency, category, condition, location, phone,
+          images: selectedImages, userId: currentUser.uid, userName: currentUser.displayName || currentUser.email,
+          createdAt: serverTimestamp(), views: 0, urgent, vip, exchange, sellerRating: 0
+        };
+        if (editingAdId) await updateDoc(doc(db, 'ads', editingAdId), data);
+        else await addDoc(collection(db, 'ads'), data);
+        document.getElementById('adModal').close();
+        resetForm();
+        window.showToast(editingAdId ? 'Объявление обновлено!' : 'Объявление создано!');
+      } catch (err) {
+        window.showToast('Ошибка: ' + err.message, 'error');
+      } finally {
+        const btn = document.getElementById('saveAd');
+        btn.disabled = false;
+        btn.innerHTML = 'Сохранить';
+      }
+    }
+    
+    function resetForm() {
+      document.getElementById('adTitle').value = '';
+      document.getElementById('adDesc').value = '';
+      document.getElementById('adPrice').value = '';
+      document.getElementById('adLocation').value = '';
+      document.getElementById('adPhone').value = '';
+      selectedImages = [];
+      updatePhotoPreview();
+      editingAdId = null;
+    }
+    
+    function updateProfileModal() {
+      if (!currentUser) return;
+      const name = currentUser.displayName || currentUser.email.split('@')[0];
+      document.getElementById('profileAvatarBig').innerHTML = name[0].toUpperCase();
+      document.getElementById('profileNameBig').innerHTML = name;
+      document.getElementById('profileEmailBig').innerHTML = currentUser.email;
+      const myAds = ads.filter(ad => ad.userId === currentUser.uid);
+      document.getElementById('profileAdsCountBig').innerHTML = myAds.length;
+      const totalViews = myAds.reduce((sum, ad) => sum + (ad.views || 0), 0);
+      document.getElementById('profileViewsBig').innerHTML = totalViews;
+      document.getElementById('profileRatingBig').innerHTML = (myAds.reduce((sum, ad) => sum + (ad.sellerRating || 0), 0) / (myAds.length || 1)).toFixed(1);
+      document.getElementById('profileSalesBig').innerHTML = myAds.filter(ad => ad.sold).length;
+      
+      document.getElementById('myAdsList').innerHTML = myAds.map(ad => `
+        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl cursor-pointer" onclick="window.showAdDetailsFromGlobal('${ad.id}')">
+          <img src="${ad.images?.[0] || 'https://via.placeholder.com/60'}" class="w-16 h-16 object-cover rounded-lg">
+          <div class="flex-1"><h4 class="font-bold">${ad.title}</h4><div class="price-big text-sm">${formatPrice(ad.price, ad.currency)}</div><div class="text-sm text-gray-500"><i class="far fa-eye"></i> ${ad.views || 0}</div></div>
+        </div>
+      `).join('') || '<div class="text-center text-gray-500">Нет объявлений</div>';
+      
+      const favAds = ads.filter(ad => favorites.includes(ad.id));
+      document.getElementById('favoritesList').innerHTML = favAds.map(ad => `
+        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl cursor-pointer" onclick="window.showAdDetailsFromGlobal('${ad.id}')">
+          <img src="${ad.images?.[0] || 'https://via.placeholder.com/60'}" class="w-16 h-16 object-cover rounded-lg">
+          <div class="flex-1"><h4 class="font-bold">${ad.title}</h4><div class="price-big text-sm">${formatPrice(ad.price, ad.currency)}</div></div>
+        </div>
+      `).join('') || '<div class="text-center text-gray-500">Нет избранного</div>';
+      
+      const historyAds = ads.filter(ad => viewHistory.includes(ad.id));
+      document.getElementById('historyList').innerHTML = historyAds.map(ad => `
+        <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl cursor-pointer" onclick="window.showAdDetailsFromGlobal('${ad.id}')">
+          <img src="${ad.images?.[0] || 'https://via.placeholder.com/60'}" class="w-16 h-16 object-cover rounded-lg">
+          <div class="flex-1"><h4 class="font-bold">${ad.title}</h4><div class="price-big text-sm">${formatPrice(ad.price, ad.currency)}</div></div>
+        </div>
+      `).join('') || '<div class="text-center text-gray-500">Нет истории</div>';
+      
+      document.getElementById('statsList').innerHTML = myAds.map(ad => `
+        <div class="p-4 bg-gray-50 rounded-xl">
+          <div class="flex justify-between"><h4 class="font-bold">${ad.title}</h4><div class="price-big">${formatPrice(ad.price, ad.currency)}</div></div>
+          <div class="grid grid-cols-3 gap-4 mt-3 text-center">
+            <div><div class="text-xl font-bold text-blue-600">${ad.views || 0}</div><div class="text-xs">Просмотров</div></div>
+            <div><div class="text-xl font-bold text-green-600">${Math.floor((ad.views || 0) * 0.1)}</div><div class="text-xs">Звонков</div></div>
+            <div><div class="text-xl font-bold text-orange-600">${((ad.views ? (Math.floor(ad.views * 0.1) / ad.views) * 100 : 0)).toFixed(1)}%</div><div class="text-xs">Конверсия</div></div>
+          </div>
+        </div>
+      `).join('') || '<div class="text-center text-gray-500">Нет статистики</div>';
+    }
+    
+    window.showAdDetailsFromGlobal = (adId) => {
+      const ad = ads.find(a => a.id === adId);
+      if (ad) showAdDetails(ad);
+    };
+    
+    function renderAuthUI() {
+      const bar = document.getElementById('authBar');
+      if (!bar) return;
+      if (!currentUser) {
+        bar.innerHTML = '<button id="loginBtn" class="gradient-bg text-white px-4 py-2 rounded-lg text-sm"><i class="fas fa-sign-in-alt mr-1"></i>Войти</button>';
+        document.getElementById('loginBtn')?.addEventListener('click', () => {
+          isLoginMode = true;
+          document.getElementById('authName').classList.add('hidden');
+          document.getElementById('toggleAuthMode').innerText = 'Нет аккаунта? Зарегистрируйтесь';
+          document.getElementById('authSubmit').innerHTML = 'Войти';
+          document.getElementById('authModal').showModal();
+        });
+      } else {
+        const name = currentUser.displayName || currentUser.email.split('@')[0];
+        bar.innerHTML = `<button id="profileBtn" class="flex items-center gap-2 bg-purple-100 px-3 py-2 rounded-lg"><span class="font-bold">${name[0].toUpperCase()}</span> <span class="text-sm hidden sm:inline">${name}</span></button>`;
+        document.getElementById('profileBtn')?.addEventListener('click', () => {
+          updateProfileModal();
+          document.getElementById('profileModal').showModal();
+        });
+      }
+    }
+    
+    // Firebase
+    onSnapshot(query(collection(db, 'ads'), orderBy('createdAt', 'desc')), (snap) => {
+      ads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAds();
+      if (currentUser) updateProfileModal();
+    });
+    
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      renderAuthUI();
+      if (user) updateProfileModal();
+    });
+    
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      const fileInput = document.getElementById('adImages');
+      if (fileInput) {
+        fileInput.addEventListener('change', async function(e) {
+          const files = Array.from(this.files);
+          if (selectedImages.length + files.length > 5) {
+            window.showToast('Можно загрузить не более 5 фото', 'error');
+            return;
+          }
+          for (const file of files) {
+            if (file.type.startsWith('image/')) {
+              const compressed = await compressImage(file);
+              selectedImages.push(compressed);
+            }
+          }
+          updatePhotoPreview();
+        });
+      }
+      
+      document.getElementById('addBtn')?.addEventListener('click', () => {
+        if (!currentUser) {
+          window.showToast('Сначала войдите в аккаунт!', 'error');
+          document.getElementById('authModal').showModal();
+          return;
+        }
+        resetForm();
+        document.getElementById('modalTitle').innerText = 'Новое объявление';
+        document.getElementById('adModal').showModal();
+      });
+      
+      document.getElementById('closeModal')?.addEventListener('click', () => document.getElementById('adModal').close());
+      document.getElementById('closeView')?.addEventListener('click', () => document.getElementById('viewDialog').close());
+      document.getElementById('closeProfileModal')?.addEventListener('click', () => document.getElementById('profileModal').close());
+      document.getElementById('closeAuthModal')?.addEventListener('click', () => document.getElementById('authModal').close());
+      document.getElementById('closeSellerProfileModal')?.addEventListener('click', () => document.getElementById('sellerProfileModal').close());
+      document.getElementById('saveAd')?.addEventListener('click', saveAdHandler);
+      document.getElementById('logoutBtn')?.addEventListener('click', () => signOut(auth));
+      
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'bg-purple-100', 'text-purple-800'));
+          btn.classList.add('active', 'bg-purple-100', 'text-purple-800');
+          currentFilter = btn.dataset.filter;
+          renderAds();
+        };
+      });
+      
+      document.querySelectorAll('.category-filter').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('catBtn-active'));
+          btn.classList.add('catBtn-active');
+          currentCategory = btn.dataset.cat;
+          renderAds();
+        };
+      });
+      
+      document.getElementById('searchInput')?.addEventListener('input', () => renderAds());
+      document.getElementById('sortSelect')?.addEventListener('change', () => renderAds());
+      
+      document.querySelectorAll('.profile-tab').forEach(tab => {
+        tab.onclick = () => {
+          document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+          document.getElementById(`tab-${tab.dataset.tab}`).classList.remove('hidden');
+        };
+      });
+      
+      document.getElementById('toggleAuthMode')?.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        const nameField = document.getElementById('authName');
+        if (isLoginMode) {
+          nameField.classList.add('hidden');
+          document.getElementById('toggleAuthMode').innerText = 'Нет аккаунта? Зарегистрируйтесь';
+          document.getElementById('authSubmit').innerHTML = 'Войти';
+        } else {
+          nameField.classList.remove('hidden');
+          document.getElementById('toggleAuthMode').innerText = 'Уже есть аккаунт? Войти';
+          document.getElementById('authSubmit').innerHTML = 'Зарегистрироваться';
+        }
+      });
+      
+      document.getElementById('authSubmit')?.addEventListener('click', async () => {
+        const email = document.getElementById('authEmail').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        const name = document.getElementById('authName').value.trim();
+        const errorDiv = document.getElementById('authError');
+        const submitBtn = document.getElementById('authSubmit');
+        
+        if (!email || !password) {
+          errorDiv.innerText = 'Заполните email и пароль';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
+        if (!isLoginMode && !name) {
+          errorDiv.innerText = 'Введите имя';
+          errorDiv.classList.remove('hidden');
+          return;
+        }
+        
+        try {
+          errorDiv.classList.add('hidden');
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="loading-spinner"></span>Загрузка...';
+          if (isLoginMode) {
+            await signInWithEmailAndPassword(auth, email, password);
+          } else {
+            const userCred = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(userCred.user, { displayName: name });
+          }
+          document.getElementById('authModal').close();
+          window.showToast('Добро пожаловать!');
+        } catch (e) {
+          let msg = 'Ошибка';
+          if (e.code === 'auth/email-already-in-use') msg = 'Email уже зарегистрирован';
+          else if (e.code === 'auth/weak-password') msg = 'Пароль минимум 6 символов';
+          else if (e.code === 'auth/user-not-found') msg = 'Пользователь не найден';
+          else if (e.code === 'auth/wrong-password') msg = 'Неверный пароль';
+          errorDiv.innerText = msg;
+          errorDiv.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = isLoginMode ? 'Войти' : 'Зарегистрироваться';
+        }
+      });
+      
+      document.getElementById('googleSignInBtn')?.addEventListener('click', async () => {
+        try {
+          await signInWithPopup(auth, googleProvider);
+          document.getElementById('authModal').close();
+          window.showToast('Вход через Google выполнен!');
+        } catch (err) {
+          window.showToast('Ошибка: ' + err.message, 'error');
+        }
+      });
+      
+      const chatBtn = document.getElementById('chatBtn');
+      const chatWin = document.getElementById('chatWindow');
+      if (chatBtn) {
+        chatBtn.onclick = () => { chatWin.style.display = 'flex'; };
+        document.getElementById('closeChatBtn')?.addEventListener('click', () => { chatWin.style.display = 'none'; });
+        document.getElementById('chatSendBtn')?.addEventListener('click', () => {
+          const input = document.getElementById('chatInput');
+          const text = input.value.trim();
+          if (!text) return;
+          const msgs = document.getElementById('chatMessages');
+          const userMsg = document.createElement('div');
+          userMsg.className = 'message user';
+          userMsg.innerHTML = `<div class="message-bubble">${text}</div>`;
+          msgs.appendChild(userMsg);
+          input.value = '';
+          msgs.scrollTop = msgs.scrollHeight;
+          window.showToast('Сообщение отправлено!');
+          setTimeout(() => {
+            const reply = document.createElement('div');
+            reply.className = 'message support';
+            reply.innerHTML = `<div class="message-bubble">✅ Спасибо! Оператор ответит.</div>`;
+            msgs.appendChild(reply);
+            msgs.scrollTop = msgs.scrollHeight;
+          }, 500);
+        });
+      }
+      
+      ['adModal', 'viewDialog', 'profileModal', 'authModal', 'sellerProfileModal'].forEach(id => {
+        const modal = document.getElementById(id);
+        if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
+      });
+    });
+  </script>
+</body>
+</html>
